@@ -57,7 +57,7 @@ export default function OrdersManager() {
     <div className={styles.container_orders}>
       <div className={styles.container_dt_forms}>
         <div className={styles.dt}></div>
-        <div className={styles.forms}>
+         <div className={`${styles.forms} ${activeForm === 'update' ? styles.formUpdateDynamique : styles.formDeleteDynamique}`}>
           <div className={styles.switchButtons}>
             <button type="button" onClick={() => setActiveForm('update')}>Modifier</button>
             <button type="button" onClick={() => setActiveForm('delete')}>Supprimer</button>
