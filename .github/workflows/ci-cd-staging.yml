@@ -52,8 +52,8 @@ jobs:
             path: cypress/reports/${{ matrix.browsers }}
 
   docker-build:
-      needs: [check-cypress, cypress-run]
-      if: always() && needs.check-cypress.result == 'success' && !failure()
+      needs: [check-cypress]
+      if: needs.check-cypress.result == 'success'
       runs-on: ubuntu-latest
       strategy:
         matrix:
