@@ -1,0 +1,103 @@
+name: CI Pipeline
+
+on:
+    push:
+      branches:
+      - feature/cicdv2
+
+jobs:
+  check-cypress:
+    runs-on: ubuntu-latest
+    outputs:
+      has-cypress: ${{ steps.check.outputs.has-cypress }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if Cypress tests exist
+        id: check
+        run: |
+          if [ -d "cypress" ] && [ "$(ls -A cypress 2>/dev/null)" ]; then
+            echo "has-cypress=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-cypress=false" >> $GITHUB_OUTPUT
+          fi
+  cypress-run:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix: 
+          browsers: [chrome, firefox, edge]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # Install npm dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run in ${{ matrix.browsers }}
+        uses: cypress-io/github-action@v6
+        with:
+          browsers: ${{ matrix.browsers }}
+          command: npx cypress run --browser  ${{ matrix.browsers }} --reporter-options reportDir=cypress/reports/${{ matrix.browsers }}
+       
+      - name: Merge Mochawesome Reports
+        run: npx mochawesome-merge cypress/reports/${{ matrix.browsers }}/*.json > cypress/reports/${{ matrix.browsers }}/merged-reports.json
+
+      - name: Generate HTML Reports
+        run: npx marge cypress/reports/${{ matrix.browsers }}/merged-reports.json --reportDir cypress/reports/${{ matrix.browsers }} -f "${{ matrix.browsers }}-report.html"
+
+      - name: Upload HTML Reports
+        uses: actions/upload-artifact@v4
+        with:
+            name: Cypress HTML Report ${{ matrix.browsers }}
+            path: cypress/reports/${{ matrix.browsers }}
+
+  docker-build:
+      needs: [check-cypress, cypress-run]
+      if: always() && (needs.cypress-run.result == 'success' || needs.cypress-run.result == 'skipped')
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          include:
+            - service: pizzapi
+              context: ./pizzapi
+              dockerfile: ./pizzapi/Dockerfile
+            - service: pizzapp
+              context: ./pizzapp
+              dockerfile: ./pizzapp/Dockerfile
+      
+      steps:
+      - uses: actions/checkout@v4
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Build and push ${{ matrix.service }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: yvann773/${{ matrix.service }}-staging:latest
+
+  deploy-to-ec2:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 staging
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_STAGING_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker system prune -f
+            docker pull yvann773/pizzapp-staging:latest
+            docker stop pizzapp || true
+            docker rm pizzapp || true
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-staging:latest
+            docker pull yvann773/pizzapi-staging:latest
+            docker stop pizzapi || true
+            docker rm pizzapi || true
+            docker run -d --name pizzapi -p 3000:3000 yvann773/pizzapi-staging:latest
+            docker image prune -f
