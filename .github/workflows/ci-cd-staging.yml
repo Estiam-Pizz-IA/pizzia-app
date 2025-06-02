@@ -75,7 +75,7 @@ jobs:
             docker pull yvann773/pizzapp-staging:latest
             docker stop pizzapp || true
             docker rm pizzapp || true
-            docker run -d --name pizzapp -p 80:80 yvann773/pizzapp-staging:latest
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-staging:latest
             docker pull yvann773/pizzapi-staging:latest
             docker stop pizzapi || true
             docker rm pizzapi || true
