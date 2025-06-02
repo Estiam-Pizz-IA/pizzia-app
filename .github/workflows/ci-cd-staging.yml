@@ -53,7 +53,7 @@ jobs:
 
   docker-build:
       needs: [check-cypress, cypress-run]
-      if: always() && (needs.cypress-run.result == 'success' || needs.cypress-run.result == 'skipped')
+      if: always() && needs.check-cypress.result == 'success' && !failure()
       runs-on: ubuntu-latest
       strategy:
         matrix:
@@ -84,6 +84,7 @@ jobs:
 
   deploy-to-ec2:
     needs: docker-build
+    if: needs.docker-build.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2 staging
