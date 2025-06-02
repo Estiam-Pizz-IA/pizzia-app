@@ -21,6 +21,8 @@ jobs:
             echo "has-cypress=false" >> $GITHUB_OUTPUT
           fi
   cypress-run:
+    needs: check-cypress
+    if: needs.check-cypress.outputs.has-cypress == 'true'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
