@@ -93,6 +93,9 @@ jobs:
           host: ${{ secrets.EC2_STAGING_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          PIZZAPI_HOST: ${{ vars.PIZZAPI_HOST }}
+          PIZZAPI_FIREBASE_ADMIN_CONFIG: ${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}
+          PIZZAPI_FIREBASE_CLIENT_CONFIG: ${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}
           script: |
             docker system prune -f
             docker pull yvann773/pizzapp-staging:latest
