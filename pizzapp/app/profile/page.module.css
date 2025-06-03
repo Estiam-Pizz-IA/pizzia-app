@@ -1,0 +1,41 @@
+.container {
+    background-color: #e9d9c1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items:center;
+}
+
+
+.profil_commands{
+    /* background-color: red; */
+    display: flex;
+    gap: 10vh;
+    margin-top:5vh;
+    margin-left: 3vh;
+}
+
+.profil{
+    background-color: #fab55a;
+    width:40vh;
+    height:50vh;
+    border-radius:1vh;
+}
+.profil_item{
+    border-bottom:1px solid#e9d9c1;
+    margin-left: 2vh;
+    margin-right: 2vh;
+}
+.container_profil{
+    display: flex;
+    justify-content: center;
+    margin-top:4vh;
+    margin-bottom:5vh;
+}
+
+.commands{
+    background-color: #fab55a;
+    width:100vh;
+    height:50vh;
+    border-radius:1vh;
+}

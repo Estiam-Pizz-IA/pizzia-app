@@ -39,7 +39,7 @@ background-color: #e9d9c1;
 }
 
 .commands {
-    background-image: url('../public/features/command.png');
+  background-image: url('/features/command.png');
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -50,7 +50,7 @@ background-color: #e9d9c1;
 
 
 .custom {
-    background-image: url('../public/features/custom.png');
+    background-image: url('/features/custom.png');
     background-size: cover;
     height: 50%;
     width: 100%;
@@ -58,7 +58,7 @@ background-color: #e9d9c1;
 }
 
 .offre {
-    background-image: url('../public/features/offre.png');
+    background-image: url('/features/offre.png');
     background-size: cover;
     height: 50%;
     width: 100%;
@@ -86,14 +86,14 @@ background-color: #e9d9c1;
     border-radius: 1vh;
 }
 .score{
-    background-image: url('../public/features/score.png') ;
+    background-image: url('/features/score.png') ;
     background-size: cover;
 }
 .price{
-    background-image: url('../public/features/prix.png') ;
+    background-image: url('/features/prix.png') ;
     background-size: cover;
 }
 .edenred{
-    background-image: url('../public/features/edenred.png') ;
+    background-image: url('/features/edenred.png') ;
     background-size: cover;
 }

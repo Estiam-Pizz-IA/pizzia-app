@@ -1,14 +1,20 @@
 const express = require('express');
 const app = express();
-const port = 3001;
+const port = process.env.PIZZAPI_PORT || 3001;
 
 const cors = require('cors');
 const cookie_session = require('cookie-session');
 const logBeforeAndAfter = require('./middlewares/log-before-and-after');
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  'origin': ["http://localhost", "http://localhost:80", "http://localhost:3000"],
+  'credentials': true,
+}));
 app.use(cookie_session({
-  keys: ["myVerySecretKey"]
+  'keys': ["myVerySecretKey"],
+  'secure': false,
+  'httpOnly': true,
+  'name': 'pizzapiSession'
 }));
 app.use(logBeforeAndAfter);
 
