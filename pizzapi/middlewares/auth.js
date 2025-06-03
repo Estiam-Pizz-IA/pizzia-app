@@ -11,7 +11,8 @@ const requireAuth = (req, res, next) => {
   }
 
   auth.verifySessionCookie(sessionCookie, true)
-    .then(() => {
+    .then((decodedClaims) => {
+      req.authUserId = decodedClaims.user_id;
       next();
     })
     .catch(() => {
