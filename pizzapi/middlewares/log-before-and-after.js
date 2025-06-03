@@ -2,7 +2,7 @@ const uuid = require('uuid')
 
 const logBeforeAndAfter = (req, res, next) => {
   const resDotSendInterceptor = (res, send) => (content) => {
-    res.contentBody = content.startsWith('{') ? JSON.parse(content) : content;
+    res.contentBody = typeof(content) === "string" && (content.startsWith('{') || content.startsWith('[')) ? JSON.parse(content) : content;
     res.send = send;
     res.send(content);
   };

@@ -51,18 +51,18 @@ const getProductById = (req, res) => {
 }
 
 const createProduct = (req, res) => {
-  const newProduct = req.body;
+  const newProduct = {
+    "name": req.body.name,
+    "description": req.body.description || req.body.name,
+    "price": req.body.price
+  };
 
   if (!newProduct.name || !newProduct.price) {
     return res.status(400).json({ message: 'Name and price are required' });
   }
 
-  if (typeof newProduct.price !== 'number') {
-    return res.status(400).json({ message: 'Price must be a number' });
-  }
-
-  if (!newProduct.desc) {
-    newProduct.desc = newProduct.name;
+  if (typeof newProduct.price !== 'number' || newProduct.price < 0) {
+    return res.status(400).json({ message: 'Price must be a number above 0' });
   }
 
   products.add(newProduct)
