@@ -7,7 +7,7 @@ const cookie_session = require('cookie-session');
 const logBeforeAndAfter = require('./middlewares/log-before-and-after');
 app.use(express.json());
 app.use(cors({
-  'origin': 'http://localhost:3000',
+  'origin': ["http://localhost", "http://localhost:80", "http://localhost:3000"],
   'credentials': true,
 }));
 app.use(cookie_session({
