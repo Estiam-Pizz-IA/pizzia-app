@@ -1,10 +1,11 @@
 {
   "UrlLogin":"http://localhost:3000/login",
   "email": "register2.cypress@gmail.com",
+  "fakeEmail": "register2",
   "firstName" : "Test",
   "lastName": "Cypress",
   "mdp": "Test12345",
   "validateMdp" :"Test12345",
-  "validateFakeMdp":"Test123456"
+  "fakeMdp":"Test"
 
 }
