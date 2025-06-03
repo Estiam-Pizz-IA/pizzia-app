@@ -79,43 +79,27 @@ const createOrder = async (req, res) => {
   }
 };
 
-const updateOrder = async (req, res) => {
+const updateOrder = (req, res) => {
   const orderID = req.params.id;
-  const { pizzaID, name, price } = req.body;
+  const updatedData = req.body;
 
-  try {
-    const orderDoc = await orders.doc(orderID).get();
-
-    if (!orderDoc.exists) {
-      return res.status(404).json({ message: 'Commande non trouvée' });
-    }
-
-    const orderData = orderDoc.data();
-
-    const updatedPizzaList = orderData.pizzaIDs.map(pizza => {
-      if (pizza.id === pizzaID) {
-        return {
-          ...pizza,
-          name,
-          price
-        };
-      }
-      return pizza;
-    });
-
-    await orders.doc(orderID).update({ pizzaIDs: updatedPizzaList });
-
-    return res.status(200).json({ message: 'Pizza mise à jour' });
-
-  } catch (error) {
-    return res.status(500).json({
-      message: {
-        error: 'Erreur serveur',
-        details: error.message
-      }
-    });
+  if (!updatedData.pizzaID) {
+    return res.status(400).json({ message: 'Please, select a pizza' });
   }
-};
+
+  orders.doc(orderID).update(updatedData)
+    .then(() => {
+      return res.status(200).json({ id: orderID, ...updatedData });
+    })
+    .catch(error => {
+      return res.status(500).json({
+        message: {
+          error: 'Error updating order',
+          details: error.message
+        }
+      });
+    });
+}
 
 const deleteOrder = (req, res) => {
   const orderID = req.params.id;

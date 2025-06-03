@@ -7,7 +7,7 @@ c'est ici que commence votre aventure. Je sais que vous êtes impatients de touc
 - [Contribute to this project](#contribute-to-this-project)
 - [HELP I'M LOST](#help-im-lost)
 ## Quick start
-Voici la liste des étapes à effectuer pour faire tourner ce projet sur votre machine :
+Voici la liste des étapes à effectuer pour fiare tourner ce projet sur votre machine :
 1) Installez docker sur votre machine depuis le site officiel https://www.docker.com/
 2) clonnez le répertoire git sur votre machine :
 ```Bash
@@ -20,8 +20,7 @@ docker compose up
 ```
 4) le programme va télécharger les dépendances et lancer les applications de front-end et back-end. Une fois le container lancé, le site sera accessible via http://localhost/ sur le navigateur de votre choix.
 
-*PS. Demandez à l'équipe pour avoir accès au variables d'environnements, sans quoi le projet ne fonctionnera pas.*\
-*Si vous souhaitez faire tourner le projet par vos propre moyen, referez vous à la partie [configuration Firebase](#configuration-firebase)*
+*ps: Demandez à l'équipe pour avoir accès au variables d'environnements, sans quoi le projet ne fonctionnera pas.*
 
 ## Dev notice
 Pour contribuer au développement de l'application, en plus de docker, il est nécéssaire d'avoir sur sa machine **TOUS LES OUTILS DE DÉVELOPPEMENT**:
@@ -71,28 +70,6 @@ Une fois sur de vos modifications, créez une merge request pour la fonctionalit
 **⚠️ ATTENTION A NE PAS COMMIT DE CLÉS API OU AUTRES SECRETS SUR GIT !⚠️**\
 \
 *ps: Je n'ai aucun problème avec l'utilisation des IA mais votre code doit rester lisible, maintenable, et vous devriez être en capacité d'expliquer les décisions d'implémentations que vous prenez lors, de par exemple, une code review avec un @TechLead*
-
-## Configuration Firebase
-Ce projet nécéssite Firebase pour fonctionner, vous aurez besoin de soit vous procurer le fichier .env de développement, soit en créer un vous même à partir de l'exemple fourni.\
-Pour créer votre fichier .env, voici les étapes à suivre :
-- copiez le template vers `/pizzapi/.env`
-```Bash
-cd pizzapi
-cp .env.exemple .env
-```
-- Créez un compte Firebase contenant les fonctionalitées suivantes (disponibles dans l'onglet créer) :
-  - Authentication
-  - Firestore Database
-- Générez un fichier credentials pour firebase-admin :
-  - cliquez sur la roue des paramètre en haut a gauche
-  - cliquez sur paramètres du projet
-  - naviguez vers l'onglet "Compte de services"
-  - Générez une nouvelle clée privée
-- Générez un fichier de configuration pour firebase-client :
-  - Sur l'écran principal, ajoutez une application web (nommez là et configurez la comme bon vous semble)
-  - Dans les paramètres du projet, scrollez la page et copiez la valeur de firebaseConfig
-- Remplacez les valeurs dans le fichier .env\
-(les fichiers credentials et firebase config que vous venez de générer doivent être ajouté en tant que valeur sur une seule ligne et au format JSON)
 
 ## HELP I'M LOST
 En cas de problème, n'hésitez pas à envoyer un message sur Teams à `@Faraan Rozbully`. Ne paniquez pas et commandez une pizza (sans Ananas) à la pizzeria la plus proche le temps de patienter.

@@ -91,7 +91,7 @@ const authProfile = (req, res) => {
         })
     })
     .catch((error) => {
-      return res.status(401).json(error);
+      return res.status(403).json(error);
     });
 }
 
@@ -103,7 +103,7 @@ const authLogout = (req, res) => {
       return res.sendStatus(200)
     })
     .catch((error) => {
-      return res.status(401).json(error)
+      return res.status(403).json(error)
     });
 }
 

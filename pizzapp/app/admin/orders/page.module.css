@@ -1,74 +1,24 @@
-.container_orders {
-    height: 100vh;
+.container_orders{
+    height:100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.container_dt_forms {
+.container_dt_forms{
     /* background-color: red; */
-    height: 70vh;
+    height:70vh;
     width: 150vh;
     display: flex;
-    gap: 2vh;
 }
 
-.switchButtons>button {
-    color: #fff;
-    cursor: pointer;
-    background-color: #820300;
-    border: none;
-    border-radius: 1vh;
-    width: 15vh;
-    height: 4vh;
-    margin-right: 2vh;
-}
-.formUpdate{
-    display: flex;
-    flex-direction: column;
-    gap:2vh
-}
-.formUpdate input {
-    border: none;
-    border-radius: 1vh;
-    width: 40vh;
-    height: 5vh;
-    padding-left: 1vh;
-}
-.formUpdate button {
-    height: 5vh;
-    border-radius:1vh;
-    border: none;
-    background-color: #820300;
-    color: white;
-}
-
-.dt {
+.dt{
     background-color: blue;
-    height: 100%;
-    width: 50%;
+    height:100%;
+    width:50%;
 }
-
-.forms {
-    background-color: #fab55a;
-    height: 50%;
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius:2vh;
-}
-
-
-.formDelete input {
-    border: none;
-    border-radius: 1vh;
-    width: 40vh;
-    height: 5vh;
-    padding-left: 1vh;
-}
-
-.formUpdateDynamique{
-    height:50vh;
+.forms{
+    background-color: green;
+    height:50%;
+    width:50%;
 }
