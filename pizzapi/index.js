@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PIZZAPI_PORT || 3001;
 
 const cors = require('cors');
 const cookie_session = require('cookie-session');
