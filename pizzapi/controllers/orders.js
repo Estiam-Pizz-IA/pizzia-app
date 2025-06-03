@@ -9,7 +9,7 @@ const getOrders = (req, res) => {
   orders.get()
     .then(snapshot => {
       if (snapshot.empty) {
-        return res.status(404).json({ message: 'No orders found' });
+        return res.status(200).json([]);
       }
 
       const ordersList = [];
