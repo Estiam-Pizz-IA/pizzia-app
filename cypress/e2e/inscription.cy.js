@@ -11,7 +11,7 @@ beforeEach(() =>{
     cy.visit(UrlLogin)
 });
 
-it.skip('Inscription avec de bonnes données', ()=>{
+it('Inscription avec de bonnes données', ()=>{
 
     cy.get('.page-module__X_Z_4a__btn_inscription').contains('Inscription').click({force:true})
     
@@ -29,7 +29,7 @@ it.skip('Inscription avec de bonnes données', ()=>{
 
 })
 
- it('Inscription avec un mauvais mot de passe en validation', ()=>{
+ it('Inscription avec un mauvais mot de passe', ()=>{
 
     cy.get('.page-module__X_Z_4a__btn_inscription').contains('Inscription').click({force:true})
     //cy.wait(8000)
@@ -44,5 +44,23 @@ it.skip('Inscription avec de bonnes données', ()=>{
     cy.get('.page-module__IMkl-G__button_inscription').contains('INSCRIPTION').click({force:true})
     cy.on('window:alert', (message) => {
     expect(message).to.eq('Le mot de passe doit faire au moins 6 caratères.')
+    })
+})
+
+it('Inscription avec un mauvais email', ()=>{
+
+    cy.get('.page-module__X_Z_4a__btn_inscription').contains('Inscription').click({force:true})
+
+    cy
+        .get('.page-module__IMkl-G__form').contains('PizzIA Inscription').should('be.visible')
+        .get('input[placeholder="Adresse email"]').type(fakeEmail)
+        .get('input[placeholder="Nom"]').type(lastName)
+        .get('input[placeholder="Prénom"]').type(firstName)
+        .get('.page-module__IMkl-G__input[type="password"]').type(mdp)
+
+
+    cy.get('.page-module__IMkl-G__button_inscription').contains('INSCRIPTION').click({force:true})
+    cy.on('window:alert', (message) => {
+    expect(message).to.eq('The email address is improperly formatted.')
     })
 })
