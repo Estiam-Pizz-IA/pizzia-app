@@ -1,6 +1,9 @@
 services:
   pizzapi:
     container_name: pizzapi-container
+    env_file:
+      - path: ./pizzapi/.env
+        required: false
     build:
       context: ./pizzapi
       dockerfile: Dockerfile
