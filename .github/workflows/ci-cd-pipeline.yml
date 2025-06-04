@@ -3,30 +3,52 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - prod
+      - main
       - develop
       - feature/*
 
+env:
+  TAG: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
+
 jobs:
+  check-cypress:
+    runs-on: ubuntu-latest
+    outputs:
+      has-cypress: ${{ steps.check.outputs.has-cypress }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if Cypress tests exist
+        id: check
+        run: |
+          if [ -d "cypress" ] && [ "$(ls -A cypress 2>/dev/null)" ]; then
+            echo "has-cypress=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-cypress=false" >> $GITHUB_OUTPUT
+          fi
+
+  cypress-tests:
+    needs: check-cypress
+    if: needs.check-cypress.outputs.has-cypress == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start
+          wait-on: 'http://localhost:3000'
+
   build-and-push:
+    needs: [check-cypress]
+    if: always() && needs.check-cypress.result == 'success'
     runs-on: ubuntu-latest
     strategy:
       matrix:
         service: [pizzapp, pizzapi]
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set TAG
-        id: set-tag
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/prod" ]; then
-            echo "tag=prod" >> $GITHUB_OUTPUT
-          else
-            echo "tag=staging" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -35,164 +57,52 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Build and push ${{ matrix.service }}
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ matrix.service }}
-          file: ./${{ matrix.service }}/Dockerfile
-          push: true
-          tags: yvann773/${{ matrix.service }}-${{ steps.set-tag.outputs.tag }}:latest
-          platforms: linux/amd64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        run: |
+          docker build -t yvann773/${{ matrix.service }}-${{ env.TAG }}:latest ./${{ matrix.service }}
+          docker push yvann773/${{ matrix.service }}-${{ env.TAG }}:latest
 
   deploy-staging:
-    needs: build-and-push                    
-    if: github.ref != 'refs/heads/prod'      
-    runs-on: ubuntu-latest                   
+    needs: [build-and-push]
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
     steps:
-      - name: Deploy to staging with Docker Compose
+      - name: Deploy to staging
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_STAGING_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/pizzia-app
-            cd /home/ubuntu/pizzia-app
+            docker pull yvann773/pizzapp-staging:latest
+            docker pull yvann773/pizzapi-staging:latest
             
-            export PIZZAPI_FIREBASE_ADMIN_CONFIG='${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}'
-            export PIZZAPI_FIREBASE_CLIENT_CONFIG='${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}'
+            docker stop pizzapp || true
+            docker rm pizzapp || true
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-staging:latest
             
-            cat > docker-compose.yml << EOF
-            services:
-              pizzapi:
-                container_name: pizzapi-container
-                image: yvann773/pizzapi-staging:latest
-                expose:
-                  - 3001
-                environment:
-                  - PIZZAPI_FIREBASE_ADMIN_CONFIG=${PIZZAPI_FIREBASE_ADMIN_CONFIG}
-                  - PIZZAPI_FIREBASE_CLIENT_CONFIG=${PIZZAPI_FIREBASE_CLIENT_CONFIG}
-
-              pizzapp:
-                container_name: pizzapp-container
-                image: yvann773/pizzapp-staging:latest
-                expose:
-                  - 3000
-                depends_on:
-                  - pizzapi
-
-              nginx:
-                image: nginx:alpine
-                ports:
-                  - "80:80"
-                volumes:
-                  - ./nginx.conf:/etc/nginx/conf.d/default.conf
-                depends_on:
-                  - pizzapp
-                  - pizzapi
-            EOF
-            
-            cat > nginx.conf << 'EOF'
-            server {
-                listen 80;
-                
-                location / {
-                    proxy_pass http://pizzapp:3000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                }
-                
-                location /api/ {
-                    proxy_pass http://pizzapi:3001/;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                }
-            }
-            EOF
-            
-            docker compose down || true
-            docker system prune -f
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker image prune -f
+            docker stop pizzapi || true
+            docker rm pizzapi || true
+            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-staging:latest
 
   deploy-prod:
-    needs: build-and-push
-    if: github.ref == 'refs/heads/prod'
+    needs: [build-and-push]
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to production with Docker Compose
+      - name: Deploy to production
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_PROD_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/pizzia-app
-            cd /home/ubuntu/pizzia-app
+            docker pull yvann773/pizzapp-prod:latest
+            docker pull yvann773/pizzapi-prod:latest
             
-            export PIZZAPI_FIREBASE_ADMIN_CONFIG='${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}'
-            export PIZZAPI_FIREBASE_CLIENT_CONFIG='${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}'
+            docker stop pizzapp || true
+            docker rm pizzapp || true
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-prod:latest
             
-            cat > docker-compose.yml << EOF
-            services:
-              pizzapi:
-                container_name: pizzapi-container
-                image: yvann773/pizzapi-prod:latest
-                expose:
-                  - 3001
-                environment:
-                  - PIZZAPI_FIREBASE_ADMIN_CONFIG=${PIZZAPI_FIREBASE_ADMIN_CONFIG}
-                  - PIZZAPI_FIREBASE_CLIENT_CONFIG=${PIZZAPI_FIREBASE_CLIENT_CONFIG}
-
-              pizzapp:
-                container_name: pizzapp-container
-                image: yvann773/pizzapp-prod:latest
-                expose:
-                  - 3000
-                depends_on:
-                  - pizzapi
-
-              nginx:
-                image: nginx:alpine
-                ports:
-                  - "80:80"
-                volumes:
-                  - ./nginx.conf:/etc/nginx/conf.d/default.conf
-                depends_on:
-                  - pizzapp
-                  - pizzapi
-            EOF
-            
-            cat > nginx.conf << 'EOF'
-            server {
-                listen 80;
-                
-                location / {
-                    proxy_pass http://pizzapp:3000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                }
-                
-                location /api/ {
-                    proxy_pass http://pizzapi:3001/;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                }
-            }
-            EOF
-            
-            docker compose down || true
-            docker system prune -f
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker image prune -f
+            docker stop pizzapi || true
+            docker rm pizzapi || true
+            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-prod:latest
