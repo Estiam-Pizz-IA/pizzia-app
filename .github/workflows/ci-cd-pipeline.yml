@@ -1,0 +1,109 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+
+env:
+  TAG: ${{ github.ref == 'refs/heads/main' && 'prod' || 'staging' }}
+
+jobs:
+  check-cypress:
+    runs-on: ubuntu-latest
+    outputs:
+      has-cypress: ${{ steps.check.outputs.has-cypress }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if Cypress tests exist
+        id: check
+        run: |
+          if [ -d "cypress" ] && [ "$(ls -A cypress 2>/dev/null)" ]; then
+            echo "has-cypress=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-cypress=false" >> $GITHUB_OUTPUT
+          fi
+
+  cypress-tests:
+    needs: check-cypress
+    if: needs.check-cypress.outputs.has-cypress == 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true  
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start
+          wait-on: 'http://localhost:3000'
+
+  build-and-push:
+    needs: [check-cypress]
+    if: always() && needs.check-cypress.result == 'success'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [pizzapp, pizzapi]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Build and push ${{ matrix.service }}
+        run: |
+          docker build -t yvann773/${{ matrix.service }}-${{ env.TAG }}:latest ./${{ matrix.service }}
+          docker push yvann773/${{ matrix.service }}-${{ env.TAG }}:latest
+
+  deploy-staging:
+    needs: [build-and-push]
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to staging
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_STAGING_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull yvann773/pizzapp-staging:latest
+            docker pull yvann773/pizzapi-staging:latest
+            
+            docker stop pizzapp || true
+            docker rm pizzapp || true
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-staging:latest
+            
+            docker stop pizzapi || true
+            docker rm pizzapi || true
+            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-staging:latest
+
+  deploy-prod:
+    needs: [build-and-push]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_PROD_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull yvann773/pizzapp-prod:latest
+            docker pull yvann773/pizzapi-prod:latest
+            
+            docker stop pizzapp || true
+            docker rm pizzapp || true
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-prod:latest
+            
+            docker stop pizzapi || true
+            docker rm pizzapi || true
+            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-prod:latest
