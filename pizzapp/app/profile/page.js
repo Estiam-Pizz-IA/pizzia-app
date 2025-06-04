@@ -14,7 +14,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await fetch('http://localhost:3001/auth/profile', {
+      const res = await fetch(`http://${window.location.hostname}:3001/auth/profile`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -33,7 +33,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const res = await fetch('http://localhost:3001/orders/user', {
+      const res = await fetch(`http://${window.location.hostname}:3001/orders/user`, {
         method: 'GET',
         credentials: 'include'
       });
