@@ -57,13 +57,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Créer le dossier de déploiement
             mkdir -p /home/ubuntu/pizzia-app
             cd /home/ubuntu/pizzia-app
             
-            # Créer le fichier docker-compose.yml
             cat > docker-compose.yml << 'EOF'
-            version: '3.8'
             services:
               pizzapi:
                 container_name: pizzapi-container
@@ -115,8 +112,6 @@ jobs:
                 }
             }
             EOF
-            
-            # Nettoyer et déployer
             docker compose down || true
             docker system prune -f
             docker compose pull
@@ -135,13 +130,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Créer le dossier de déploiement
             mkdir -p /home/ubuntu/pizzia-app
             cd /home/ubuntu/pizzia-app
             
-            # Créer le fichier docker-compose.yml
             cat > docker-compose.yml << 'EOF'
-            version: '3.8'
             services:
               pizzapi:
                 container_name: pizzapi-container
@@ -195,7 +187,6 @@ jobs:
             }
             EOF
             
-            # Nettoyer et déployer
             docker compose down || true
             docker system prune -f
             docker compose pull
