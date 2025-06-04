@@ -1,0 +1,8 @@
+{
+  "UrlLogin":"http://localhost:3000/login",
+  "email": "test3.cypress@gmail.com",
+  "mdp": "Test123",
+  "pizza":"Pizza Végétarienne"
+
+
+}
