@@ -30,7 +30,6 @@ export default function Commands() {
                 const response = await fetch('http://localhost:3001/products');
                 const data = await response.json();
                 setProducts(data);
-                console.log('Produits:', data);
             } catch (error) {
                 console.error('Erreur produits:', error);
             }
