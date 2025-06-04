@@ -5,8 +5,8 @@ export default function Cart({ selectedProducts, setSelectedProducts }) {
 
   return (
     <div className={styles.cart_container}>
-      {selectedProducts.map(product => (
-        <CartProduct product={product} setSelectedProducts={setSelectedProducts} />
+      {selectedProducts.map((product, index) => (
+        <CartProduct key={index} product={product} setSelectedProducts={setSelectedProducts} />
       ))}
     </div>
   );
