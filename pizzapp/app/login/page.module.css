@@ -1,0 +1,117 @@
+.contain {
+  background-color: #e9d9c1;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contain_form {
+  background-color: #ffc96f;
+  width: 120vh;
+  height: 70vh;
+  border-radius: 2vh;
+  display: flex;
+}
+
+.contain_left {
+  height: 100%;
+  width: 50%;
+}
+
+.bloc_decoration {
+  background: radial-gradient(circle at 30% 30%, #e53935, #8e0000);
+  height: 60vh;
+  width: 50vh;
+  border-radius: 10px 0 100% 0;
+  position: relative;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #e53935, #8e0000);
+}
+
+.circle_left {
+  width: 30vh;
+  height: 30vh;
+  bottom: -10vh;
+  border-radius: 0 100% 0px 10px;
+}
+
+.contain_right {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+}
+
+.contain_input {
+  width: 40vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  height: 5vh;
+  border-radius: 1vh;
+  border: none;
+  padding-left: 2vh;
+}
+
+.btn_connexion {
+  height: 5vh;
+  background-color: #b80000;
+  border: none;
+  border-radius: 1vh;
+  color: white;
+  cursor: pointer;
+}
+
+.btn_connexion:hover {
+  background-color: #a10000;
+}
+
+.btn_inscription {
+  height: 5vh;
+  background-color: #ffff;
+  border: none;
+  border-radius: 1vh;
+  border: solid 2px #b80000;
+  cursor: pointer;
+  width: 40vh;
+}
+
+.btn_inscription:hover {
+  background-color: #ededed;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background-color: white;
+  border: none;
+}
+
+.text {
+  padding: 0 10px;
+  color: white;
+  font-size: 14px;
+  white-space: nowrap;
+}

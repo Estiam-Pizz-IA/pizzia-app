@@ -1,0 +1,44 @@
+.container {
+  height: 100vh;
+  background-color: #e9d9c1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contain_form {
+  height: 60vh;
+  width: 60vh;
+  background-color: #ffc96f;
+  border-radius: 2vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+
+.input {
+  width: 40vh;
+  height: 4vh;
+  padding-left: 2vh;
+  border-radius: 1vh;
+  border: none;
+}
+
+.button_inscription {
+  height: 4vh;
+  border-radius: 1vh;
+  border: none;
+  background-color: #8e0000;
+  color: white;
+  cursor: pointer;
+}
+
+.button_inscription:hover {
+  background-color: #a10000;
+}

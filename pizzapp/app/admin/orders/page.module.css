@@ -1,0 +1,24 @@
+.container_orders{
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container_dt_forms{
+    /* background-color: red; */
+    height:70vh;
+    width: 150vh;
+    display: flex;
+}
+
+.dt{
+    background-color: blue;
+    height:100%;
+    width:50%;
+}
+.forms{
+    background-color: green;
+    height:50%;
+    width:50%;
+}

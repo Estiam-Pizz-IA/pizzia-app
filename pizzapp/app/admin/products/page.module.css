@@ -1,0 +1,87 @@
+.container_admin{
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+  transition: height 0.3s ease;
+  overflow: hidden;
+  background-color: #fab55a;
+  padding: 2rem;
+  border-radius: 12px;
+}
+.containerAdd {
+  height: 40vh;
+  width:60vh;
+}
+.containerEdit {
+  height: 50vh;
+  width:60vh;
+}
+
+.switchButtons{
+    height:5vh;
+    display: flex;
+    justify-content: center;
+    gap:2vh;
+    margin-top:10%;
+}
+
+
+/* Add Product CSS */
+.button_switch{
+    height:4vh;
+    width:15vh;
+    background-color : #820300;
+    border: none;
+    border-radius: 1vh;
+    color:white;
+    cursor: pointer;
+}
+.buttonForm:hover{
+    background-color: #a00b0b;
+}
+
+.formAdd{
+    display: flex;
+    flex-direction: column;
+    gap:2vh;
+    align-items: center;
+}
+.formAdd input{
+    height:5vh;
+    width:40vh;
+    border-radius:1vh;
+    padding-left:1vh;
+    border:none
+}
+.button_submit{
+    height:5vh;
+    width:41vh;
+    border-radius:1vh;
+    border:none;
+    background-color:#820300;
+    color : white;
+    cursor: pointer;
+}
+.button_submit:hover{
+    background-color: #a00b0b;
+}
+
+
+/* update Product CSS */
+
+.formUpdate{
+    display: flex;
+    flex-direction: column;
+    gap:2vh;
+    align-items: center;
+}
+.formUpdate input{
+    height:5vh;
+    width:40vh;
+    border-radius:1vh;
+    padding-left:1vh;
+    border:none
+}
