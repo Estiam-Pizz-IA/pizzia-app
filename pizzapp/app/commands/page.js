@@ -12,6 +12,17 @@ export default function Commands() {
     const [products, setProducts] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
 
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState(''); // 'success' ou 'error'
+
+    const showMessage = (msg, type = 'succes') => {
+        setMessage(msg);
+        setMessageType(type);
+        setTimeout(() => {
+            setMessage('');
+            setMessageType('');
+        }, 3000);
+    }
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -41,7 +52,7 @@ export default function Commands() {
                 body: JSON.stringify(payload),
             }).then(() => {
                 setSelectedProducts([]);
-                alert('Commande passée avec succès !');
+                showMessage('Commande passée avec succès !');
             });
         } catch (error) {
             console.error('Erreur lors de la commande:', error);
@@ -53,6 +64,11 @@ export default function Commands() {
         <div>
             <Navbar />
             <div className={styles.contain_one}>
+                {message && (
+                    <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
+                        {message}
+                    </div>
+                )}
                 <div className={styles.container_name}>
                     {selectedProducts.length > 0 ? (
                         <div className={styles.cart_container}>
