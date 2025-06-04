@@ -9,7 +9,7 @@ const getOrders = (req, res) => {
   orders.get()
     .then(snapshot => {
       if (snapshot.empty) {
-        return res.status(404).json({ message: 'No orders found' });
+        return res.status(200).json([]);
       }
 
       const ordersList = [];
@@ -53,13 +53,41 @@ const getOrderById = (req, res) => {
     });
 }
 
+const getOrdersByUserID = (req, res) => {
+  const userID = req.authUserId;
+
+  orders.where('userID.uid', '==', userID).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        return res.status(200).json([]);
+      }
+
+      const userOrders = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      return res.status(200).json(userOrders);
+    })
+    .catch(error => {
+      return res.status(500).json({
+        message: {
+          error: 'Erreur lors de la récupération des commandes',
+          details: error.message
+        }
+      });
+    });
+};
+
+
 const createOrder = async (req, res) => {
   try {
     const newOrder = req.body;
 
     newOrder.dateOrder = new Date().toISOString();
+    const userID = req.authUserId;
 
-    const userData = await getUser(req.body.userID);
+    const userData = await getUser(userID);
     const pizzaData = await getProducts(req.body.pizzaIDs);
 
     newOrder.userID = userData;
@@ -133,4 +161,4 @@ const deleteOrder = (req, res) => {
     });
 }
 
-module.exports = { getOrders, getOrderById, createOrder, updateOrder, deleteOrder };
+module.exports = { getOrders, getOrderById, getOrdersByUserID, createOrder, updateOrder, deleteOrder };

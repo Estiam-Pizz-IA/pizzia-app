@@ -22,7 +22,8 @@ export default function OrdersManager() {
           pizzaID: pizzaId,
           name: pizzaName,
           price: parseFloat(pizzaPrice)
-        })
+        }),
+        credentials: 'include'
       });
 
       if (res.ok) {
