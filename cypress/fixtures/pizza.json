@@ -1,0 +1,7 @@
+{
+  "UrlPizza":"http://localhost:3000/commands",
+  "pizza": "Pizza Végétarienne",
+  "description":"tomate, mozzarella, champignons, poivrons, coeur d'artichaut, olives",
+  "prix":"6 €"
+
+}

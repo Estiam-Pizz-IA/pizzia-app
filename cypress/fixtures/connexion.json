@@ -1,0 +1,12 @@
+{
+
+  "email": "test3.cypress@gmail.com",
+  "mdp": "Test123",
+  "UrlLogin":"http://localhost:3000/login",
+  "fakeEmail" : "fake.cypress@gmail.com",
+  "fakeMdp" : "Test12345",
+  "firstName" : "Test",
+  "lastName": "Test"
+
+  
+}

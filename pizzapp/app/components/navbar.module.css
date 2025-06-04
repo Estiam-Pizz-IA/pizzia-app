@@ -1,0 +1,44 @@
+.nav {
+    background: linear-gradient(90deg, #fab55a, #ffc96c);
+    width: 90%;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+    padding: 0 2rem;
+    position: sticky;
+    top: 1vh;
+    z-index: 1000;
+    margin: 1vh auto;
+}
+
+.nav_item {
+    height: 100%;
+    width: 15vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+}
+
+.nav_item:hover {
+    background-color: #F2AF57;
+}
+
+.btn_deconnexion {
+    height: 6vh;
+    width: 6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border : none;
+    background-color: transparent;
+    cursor: pointer;
+}

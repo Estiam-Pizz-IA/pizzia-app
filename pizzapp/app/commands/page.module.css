@@ -1,0 +1,81 @@
+.contain_one {
+  justify-content: center;
+  height: 30vh;
+  margin-top: 5vh;
+  display: flex;
+  justify-content: center;
+  padding: 0px 40px;
+}
+
+.container_name {
+    border-radius: 3vh;
+    width: 180vh;
+    height: 20vh;
+    color: #8e0000;
+    padding: 10px;
+    border: 7px solid #8e0000;
+    background-color: #ffc96c;
+}
+
+.cart_container {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.name {
+    height: 30vh;
+}
+
+.title {
+    margin-left: 5vh;
+}
+
+.myCard {
+    background-color:  #fab55a ;
+    width: 45vh;
+    height: 50vh;
+    border-radius: 3vh;
+}
+.cartTitle{
+    margin-left:2vh;
+}
+
+.test{
+    /* background-color: red; */
+    width:125vh;
+    display: flex;
+
+}
+
+.empty_state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 15px;
+}
+
+.contain_two {
+  height: 100%;
+  overflow: hidden;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.test {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.contain_cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}

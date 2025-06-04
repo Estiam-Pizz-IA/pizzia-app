@@ -1,0 +1,13 @@
+
+.navbar {
+  background-color: #fab55a;
+  padding: 1rem;
+  
+}
+
+.navLink {
+  margin-right: 1.5rem;
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: 500;
+}
