@@ -68,8 +68,8 @@ jobs:
                 expose:
                   - 3001
                 environment:
-                  - PIZZAPI_FIREBASE_ADMIN_CONFIG=${PIZZAPI_FIREBASE_ADMIN_CONFIG}
-                  - PIZZAPI_FIREBASE_CLIENT_CONFIG=${PIZZAPI_FIREBASE_CLIENT_CONFIG}
+                  - PIZZAPI_FIREBASE_ADMIN_CONFIG=${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}
+                  - PIZZAPI_FIREBASE_CLIENT_CONFIG=${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}
 
               pizzapp:
                 container_name: pizzapp-container
