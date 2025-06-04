@@ -29,7 +29,7 @@ export default function Navbar() {
   return (
     <nav className={styles.nav}>
       <div className={styles.nav_item}><Image src="/features/logo_pizzia.png" alt="logo" width={70} height={70} /></div>
-      <Link href='/profil' className={styles.nav_item}>ACCEUIL</Link>
+      <Link href='/home' className={styles.nav_item}>ACCEUIL</Link>
       <Link href="/offres" className={styles.nav_item}>OFFRES</Link>
       <Link href="/commands" className={`${styles.nav_item} ${styles.link_commands}`}>COMMANDES</Link>
       {!isLoggedIn && (
@@ -39,7 +39,7 @@ export default function Navbar() {
       {isLoggedIn && (
         <>
           <Link href="/profile" className={styles.nav_item}>PROFILE</Link>
-          <button onClick={handleLogout} className={styles.btn_deconnexion}><Image src="/features/exit.png" alt="logo" width={20} height={20}/></button>
+          <button onClick={handleLogout} className={styles.btn_deconnexion}><Image src="/features/exit.png" alt="logo" width={20} height={20} /></button>
         </>
       )}
     </nav>

@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import styles from './page.module.css';
+import { useEffect } from 'react';
+import { Grid } from './components/Grid';
 
 export default function OrdersManager() {
   const [activeForm, setActiveForm] = useState('update');
@@ -11,8 +13,10 @@ export default function OrdersManager() {
 
   const [deleteOrder, setDeleteOrder] = useState('');
 
+  const [orders, setOrders] = useState([]);
+
   const handleUpdate = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     try {
       const res = await fetch(`http://localhost:3001/orders/${orderId}`, {
@@ -37,28 +41,47 @@ export default function OrdersManager() {
     }
   };
 
-  const handleDelete = async(e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
 
-    try{
-        const res = await fetch(`http://localhost:3001/orders/${deleteOrder}`, {
-            method: 'DELETE'
-        });
+    try {
+      const res = await fetch(`http://localhost:3001/orders/${deleteOrder}`, {
+        method: 'DELETE'
+      });
 
-        if(res.ok){
-            alert("Commande supprimée");
-            setDeleteOrder('');
-        }
-    }catch(error) {
-        alert("Erreur : " + error.message );
+      if (res.ok) {
+        alert("Commande supprimée");
+        setDeleteOrder('');
+      }
+    } catch (error) {
+      alert("Erreur : " + error.message);
     }
   }
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/orders', {
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+        setOrders(data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des commandes:', error);
+      }
+    }
+
+    fetchOrders();
+  }, []);
 
   return (
     <div className={styles.container_orders}>
       <div className={styles.container_dt_forms}>
-        <div className={styles.dt}></div>
-         <div className={`${styles.forms} ${activeForm === 'update' ? styles.formUpdateDynamique : styles.formDeleteDynamique}`}>
+        <div className={styles.dt}>
+          <Grid orders={orders} />
+        </div>
+        <div className={`${styles.forms} ${activeForm === 'update' ? styles.formUpdateDynamique : styles.formDeleteDynamique}`}>
           <div className={styles.switchButtons}>
             <button type="button" onClick={() => setActiveForm('update')}>Modifier</button>
             <button type="button" onClick={() => setActiveForm('delete')}>Supprimer</button>
@@ -78,7 +101,7 @@ export default function OrdersManager() {
           {activeForm === 'delete' && (
             <form className={styles.formDelete} onSubmit={handleDelete}>
               <h2>Supprimer une commande</h2>
-              <input type="text" placeholder='ID de la commande' value={deleteOrder} onChange={(e) => setDeleteOrder(e.target.value)}/>
+              <input type="text" placeholder='ID de la commande' value={deleteOrder} onChange={(e) => setDeleteOrder(e.target.value)} />
               <button type="submit">Supprimer</button>
             </form>
           )}
