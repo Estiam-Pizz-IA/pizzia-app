@@ -36,18 +36,27 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Set EC2 host
+        id: set-host
+        run: |
+          if [ "${{ env.TAG }}" == "prod" ]; then
+            echo "ec2_host=${{ secrets.EC2_HOST_PROD }}" >> $GITHUB_OUTPUT
+          else
+            echo "ec2_host=${{ secrets.EC2_HOST_STAGING }}" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST_${{ env.TAG == 'prod' && 'PROD' || 'STAGING' }} }}
+          host: ${{ steps.set-host.outputs.ec2_host }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull yvann773/pizzapp-${TAG}:latest
-            docker pull yvann773/pizzapi-${TAG}:latest
+            docker pull yvann773/pizzapp-${{ env.TAG }}:latest
+            docker pull yvann773/pizzapi-${{ env.TAG }}:latest
             docker stop pizzapp || true
             docker rm pizzapp || true
-            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-${TAG}:latest
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-${{ env.TAG }}:latest
             docker stop pizzapi || true
             docker rm pizzapi || true
-            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-${TAG}:latest
+            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-${{ env.TAG }}:latest
