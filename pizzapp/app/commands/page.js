@@ -61,6 +61,7 @@ export default function Commands() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
+                credentials: 'include'
             }).then(() => {
                 setSelectedProducts([]);
                 showMessage('Commande passée avec succès !');
