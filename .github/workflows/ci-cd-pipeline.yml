@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - prod
-      - develop
+      - dev
       - feature/*
 
 env:
@@ -59,4 +59,7 @@ jobs:
             docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-${{ env.TAG }}:latest
             docker stop pizzapi || true
             docker rm pizzapi || true
-            docker run -d --name pizzapi -p 3001:3001 yvann773/pizzapi-${{ env.TAG }}:latest
+            docker run -d --name pizzapi -p 3001:3001 \
+              -e PIZZAPI_FIREBASE_ADMIN_CONFIG='${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}' \
+              -e PIZZAPI_FIREBASE_CLIENT_CONFIG='${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}' \
+              yvann773/pizzapi-${{ env.TAG }}:latest
