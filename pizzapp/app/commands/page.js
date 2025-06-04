@@ -70,8 +70,12 @@ export default function Commands() {
             </div>
 
             <Button
+                sx={{
+                    backgroundColor: '#fab55a',
+                    color: '#ffff',
+                    ml: '20px',
+                }}
                 variant="contained"
-                className={styles.order_button}
                 disabled={selectedProducts.length === 0}
                 onClick={handleOrder}
             >
