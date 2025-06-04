@@ -41,6 +41,7 @@ jobs:
     needs: build-and-push
     if: github.ref != 'refs/heads/prod'
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Deploy to staging
         uses: appleboy/ssh-action@v1.0.3
