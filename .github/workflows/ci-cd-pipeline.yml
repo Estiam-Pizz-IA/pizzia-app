@@ -27,19 +27,19 @@ jobs:
           fi
 
   cypress-tests:
-  needs: check-cypress
-  if: needs.check-cypress.outputs.has-cypress == 'true'
-  runs-on: ubuntu-latest
-  continue-on-error: true  
-  steps:
-    - uses: actions/checkout@v4
-    
-    - name: Cypress run
-      uses: cypress-io/github-action@v6
-      with:
-        build: npm run build
-        start: npm start
-        wait-on: 'http://localhost:3000'
+    needs: check-cypress
+    if: needs.check-cypress.outputs.has-cypress == 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true  
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start
+          wait-on: 'http://localhost:3000'
 
   build-and-push:
     needs: [check-cypress]
