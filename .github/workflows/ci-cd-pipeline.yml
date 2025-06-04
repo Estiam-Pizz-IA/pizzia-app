@@ -43,50 +43,37 @@ jobs:
         run: |
           docker push yvann773/${{ matrix.service }}-${{ steps.set-tag.outputs.tag }}:latest
 
-  deploy-staging:
+  deploy:
     needs: build-and-push
-    if: github.ref != 'refs/heads/prod'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - environment: staging
+            condition: ${{ github.ref != 'refs/heads/prod' }}
+            host_secret: EC2_STAGING_HOST
+            tag: staging
+          - environment: prod
+            condition: ${{ github.ref == 'refs/heads/prod' }}
+            host_secret: EC2_PROD_HOST
+            tag: prod
+    if: ${{ matrix.condition }}
     steps:
-      - name: Deploy to staging
+      - name: Deploy to ${{ matrix.environment }}
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_STAGING_HOST }}
+          host: ${{ secrets[matrix.host_secret] }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull yvann773/pizzapp-staging:latest
-            docker pull yvann773/pizzapi-staging:latest
+            docker pull yvann773/pizzapp-${{ matrix.tag }}:latest
+            docker pull yvann773/pizzapi-${{ matrix.tag }}:latest
             docker stop pizzapp || true
             docker rm pizzapp || true
-            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-staging:latest
+            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-${{ matrix.tag }}:latest
             docker stop pizzapi || true
             docker rm pizzapi || true
             docker run -d --name pizzapi -p 3001:3001 \
               -e PIZZAPI_FIREBASE_ADMIN_CONFIG='${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}' \
               -e PIZZAPI_FIREBASE_CLIENT_CONFIG='${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}' \
-              yvann773/pizzapi-staging:latest
-
-  deploy-prod:
-    needs: build-and-push
-    if: github.ref == 'refs/heads/prod'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to production
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_PROD_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            docker pull yvann773/pizzapp-prod:latest
-            docker pull yvann773/pizzapi-prod:latest
-            docker stop pizzapp || true
-            docker rm pizzapp || true
-            docker run -d --name pizzapp -p 80:3000 yvann773/pizzapp-prod:latest
-            docker stop pizzapi || true
-            docker rm pizzapi || true
-            docker run -d --name pizzapi -p 3001:3001 \
-              -e PIZZAPI_FIREBASE_ADMIN_CONFIG='${{ secrets.PIZZAPI_FIREBASE_ADMIN_CONFIG }}' \
-              -e PIZZAPI_FIREBASE_CLIENT_CONFIG='${{ secrets.PIZZAPI_FIREBASE_CLIENT_CONFIG }}' \
-              yvann773/pizzapi-prod:latest
+              yvann773/pizzapi-${{ matrix.tag }}:latest
