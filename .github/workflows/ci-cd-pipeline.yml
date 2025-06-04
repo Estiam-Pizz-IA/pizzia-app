@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build images
         run: |
-          docker-compose -f docker-compose.yml build
+          docker compose -f docker-compose.yml build
       - name: Tag images
         run: |
           docker tag yvann773/pizzapp:latest yvann773/pizzapp-${TAG}:latest
