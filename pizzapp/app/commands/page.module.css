@@ -7,13 +7,6 @@
   padding: 0px 40px;
 }
 
-.order_button {
-    background-color: #fab55a;
-    color: white;
-    cursor: pointer;
-    margin-left: 20px;
-}
-
 .container_name {
     border-radius: 3vh;
     width: 180vh;
