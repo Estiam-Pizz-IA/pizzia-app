@@ -94,7 +94,6 @@ jobs:
                   - pizzapi
             EOF
             
-            # Créer le fichier nginx.conf
             cat > nginx.conf << 'EOF'
             server {
                 listen 80;
@@ -173,7 +172,7 @@ jobs:
                   - pizzapi
             EOF
             
-            # Créer le fichier nginx.conf
+
             cat > nginx.conf << 'EOF'
             server {
                 listen 80;
