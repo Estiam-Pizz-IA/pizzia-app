@@ -92,9 +92,10 @@ jobs:
                   - 80:3000
             EOF
             
-            docker compose down || true
-            docker compose pull
-            docker compose up -d --remove-orphans
+            /usr/bin/docker compose down || true
+            /usr/bin/docker compose pull
+            /usr/bin/docker compose up -d --remove-orphans
+
 
   deploy-prod:
     needs: [build-and-push]
