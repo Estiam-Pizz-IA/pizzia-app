@@ -1,17 +1,19 @@
+version: '3.8'
 services:
   pizzapi:
     container_name: pizzapi-container
     build:
       context: ./pizzapi
       dockerfile: Dockerfile
+    image: yvann773/pizzapi:latest
     ports:
       - 3001:3001
-    image: yvann773/pizzapi:${TAG}
+
   pizzapp:
     container_name: pizzapp-container
     build:
       context: ./pizzapp
       dockerfile: Dockerfile
+    image: yvann773/pizzapp:latest
     ports:
       - 80:3000
-    image: yvann773/pizzapp:${TAG}
