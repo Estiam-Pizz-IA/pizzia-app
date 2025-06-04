@@ -4,13 +4,14 @@ import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 import CardProduct from "../components/cardProduct";
 import { Package } from "lucide-react";
-import { Button, Grid, Typography } from "@mui/material";
+import { Alert, Button, Grid, Typography } from "@mui/material";
 import Cart from "../components/cart";
 
 export default function Commands() {
 
     const [products, setProducts] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const [user, setUser] = useState(null);
 
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState(''); // 'success' ou 'error'
@@ -35,12 +36,22 @@ export default function Commands() {
             }
         };
 
+        fetch('http://localhost:3001/auth/profile', {
+            method: 'GET',
+            credentials: 'include',
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            setUser(data);
+        })
+
         fetchProducts();
     }, []);
 
     function handleOrder() {
         const payload = {
-            pizzaIDs: selectedProducts.map(product => product.id)
+            pizzaIDs: selectedProducts.map(product => product.id),
+            userID: user.uid,
         };
 
         try {
@@ -85,18 +96,24 @@ export default function Commands() {
                 </div>
             </div>
 
-            <Button
-                sx={{
-                    backgroundColor: '#fab55a',
-                    color: '#ffff',
-                    ml: '20px',
-                }}
-                variant="contained"
-                disabled={selectedProducts.length === 0}
-                onClick={handleOrder}
-            >
-                Passer une commande
-            </Button>
+            {user?.uid ? (
+                <Button
+                    sx={{
+                        backgroundColor: '#fab55a',
+                        color: '#ffff',
+                        ml: '20px',
+                    }}
+                    variant="contained"
+                    disabled={selectedProducts.length === 0}
+                    onClick={handleOrder}
+                >
+                    Passer une commande
+                </Button>
+            ) : (
+                <Alert severity="warning" sx={{ margin: '20px' }}>
+                    Veuillez vous connecter pour passer une commande.
+                </Alert>
+            )}
 
             <div className={styles.contain_two}>
                 <div className={styles.container}>

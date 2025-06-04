@@ -69,11 +69,11 @@ export default function Login() {
             <h1>Connexion</h1>
 
             <div className={styles.contain_input}>
-              <input type="text" placeholder="Adresse email" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type="text" placeholder="Adresse email" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)}  />
             </div>
 
             <div className={styles.contain_input}>
-              <input type="password" placeholder="Mot de passe" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" placeholder="Mot de passe" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)}  />
             </div>
 
             <button className={styles.btn_connexion}>Connexion</button>
