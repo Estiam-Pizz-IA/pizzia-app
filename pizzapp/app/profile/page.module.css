@@ -1,9 +1,8 @@
 .container {
     background-color: #e9d9c1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    align-items:center;
+    align-items: center;
 }
 
 
@@ -20,6 +19,8 @@
     width:40vh;
     height:50vh;
     border-radius:1vh;
+    box-shadow: 1px 1px 1px  #17202a ;
+    color: #fff;
 }
 .profil_item{
     border-bottom:1px solid#e9d9c1;
@@ -34,8 +35,13 @@
 }
 
 .commands{
-    background-color: #fab55a;
     width:100vh;
-    height:50vh;
     border-radius:1vh;
+}
+
+
+.dt {
+    background-color: rgb(242, 242, 242);
+    width: 100%; 
+    border-radius: 1vh;
 }

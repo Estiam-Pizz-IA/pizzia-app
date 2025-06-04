@@ -5,7 +5,7 @@ import Navbar from '../components/navbar';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-
+import { Grid } from './components/Grid';
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -37,6 +37,7 @@ export default function ProfilePage() {
         method: 'GET',
         credentials: 'include'
       });
+
 
       if (res.status === 200) {
         const ordersData = await res.json();
@@ -70,22 +71,12 @@ export default function ProfilePage() {
           </div>
           <div className={styles.commands}>
 
-            <div className={styles.title}>Mes commandes</div>
+          
 
             <div className={styles.command_list}>
-
-              {orders.length > 0 ? (
-                orders.map((order) => (
-                  <div key={order.id} className={styles.command_item}>
-                    <p>Date de la commande: {new Date(order.dateOrder).toLocaleDateString()}</p>
-                    <p>Statut: {order.status}</p>
-                    <p>Pizzas: {order.pizzaIDs.map(pizza => pizza.name).join(', ')}</p>
-                  </div>
-                ))
-              ) : (
-                <p>Aucune commande trouvée.</p>
-              )}
-
+              <div className={styles.dt}>
+                <Grid orders={orders} user={user} />
+              </div>
             </div>
 
           </div>

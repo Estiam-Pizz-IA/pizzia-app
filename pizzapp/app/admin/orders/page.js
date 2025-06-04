@@ -58,7 +58,8 @@ export default function OrdersManager() {
 
     try {
       const res = await fetch(`http://localhost:3001/orders/${deleteOrder}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       });
 
       if (res.ok) {
