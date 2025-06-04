@@ -27,7 +27,7 @@ export default function Commands() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:3001/products');
+                const response = await fetch(`http://${window.location.hostname}:3001/products`);
                 const data = await response.json();
                 setProducts(data);
             } catch (error) {
@@ -35,7 +35,7 @@ export default function Commands() {
             }
         };
 
-        fetch('http://localhost:3001/auth/profile', {
+        fetch(`http://${window.location.hostname}:3001/auth/profile`, {
             method: 'GET',
             credentials: 'include',
         }).then((response) => {
@@ -54,7 +54,7 @@ export default function Commands() {
         };
 
         try {
-            fetch('http://localhost:3001/orders', {
+            fetch(`http://${window.location.hostname}:3001/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

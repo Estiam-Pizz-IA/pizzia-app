@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
 const port = process.env.PIZZAPI_PORT || 3001;
+const pizzappDynamicHostname = `http://${process.env.EC2_STAGING_HOST}` || 'http://localhost';
 
 const cors = require('cors');
 const cookie_session = require('cookie-session');
 const logBeforeAndAfter = require('./middlewares/log-before-and-after');
 app.use(express.json());
 app.use(cors({
-  'origin': ["http://localhost", "http://localhost:80", "http://localhost:3000"],
+  'origin': [pizzappDynamicHostname, "http://localhost:3000"],
   'credentials': true,
 }));
 app.use(cookie_session({
