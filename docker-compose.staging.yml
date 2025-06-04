@@ -1,0 +1,5 @@
+services:
+  pizzapp:
+    image: yvann773/pizzapp-staging:latest
+  pizzapi:
+    image: yvann773/pizzapi-staging:latest

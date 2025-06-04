@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3001:3001
-
+    image: yvann773/pizzapi:${TAG}
   pizzapp:
     container_name: pizzapp-container
     build:
@@ -14,3 +14,4 @@ services:
       dockerfile: Dockerfile
     ports:
       - 80:3000
+    image: yvann773/pizzapp:${TAG}
