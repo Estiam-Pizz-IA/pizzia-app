@@ -12,8 +12,20 @@ export default function OrdersManager() {
   const [pizzaPrice, setPizzaPrice] = useState('');
 
   const [deleteOrder, setDeleteOrder] = useState('');
-
   const [orders, setOrders] = useState([]);
+
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState(''); 
+
+  const showMessage = (msg, type = 'success') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
+
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -31,13 +43,13 @@ export default function OrdersManager() {
       });
 
       if (res.ok) {
-        alert("Pizza modifiée avec succès !");
+        showMessage("Pizza modifiée avec succès !");
       } else {
         const err = await res.json();
-        alert('Erreur : ' + (err.message?.details || 'Erreur inconnue'));
+        showMessage('Erreur : ' + (err.message?.details || 'Erreur inconnue'));
       }
     } catch (error) {
-      alert('Erreur : ' + error.message);
+      showMessage('Erreur : ' + error.message);
     }
   };
 
@@ -46,15 +58,16 @@ export default function OrdersManager() {
 
     try {
       const res = await fetch(`http://localhost:3001/orders/${deleteOrder}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       });
 
       if (res.ok) {
-        alert("Commande supprimée");
+        showMessage("Commande supprimée");
         setDeleteOrder('');
       }
     } catch (error) {
-      alert("Erreur : " + error.message);
+      showMessage("Erreur : " + error.message, 'error');
     }
   }
 
@@ -77,6 +90,12 @@ export default function OrdersManager() {
 
   return (
     <div className={styles.container_orders}>
+      {message && (
+        <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
+          {message}
+        </div>
+      )}
+
       <div className={styles.container_dt_forms}>
         <div className={styles.dt}>
           <Grid orders={orders} />

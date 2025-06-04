@@ -10,6 +10,18 @@ export default function Inscription() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState(''); // 'success' ou 'error'
+
+  const showMessage = (msg, type = 'succes') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  }
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -24,28 +36,33 @@ export default function Inscription() {
 
 
       if (!res.ok) {
-        alert(data.details || "Erreur à l'inscription");
+        showMessage(data.details || "Erreur à l'inscription");
         return;
       }
 
-      alert('Inscription réussi');
+      showMessage('Inscription réussi');
       router.push('/login');
     } catch (err) {
       console.error('Erreur API:', err);
-      alert('Erreur lors de l’inscription');
+      showMessage('Erreur lors de l’inscription');
     }
   }
   return (
     <div className={styles.container}>
+      {message && (
+        <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
+          {message}
+        </div>
+      )}
       <div className={styles.contain_form}>
-          <form onSubmit={handleRegister} className={styles.form}>
-            <h1>PizzIA Inscription</h1>
-            <input type="text" placeholder="Adresse email" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input type="text" placeholder="Nom" className={styles.input} value={lastName} onChange={(e) => setLastname(e.target.value)} />
-            <input type="text" placeholder="Prénom" className={styles.input} value={firstName} onChange={(e) => setFirstname(e.target.value)} />
-            <input type="password" placeholder="Mot de dpasse" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button className={styles.button_inscription}>INSCRIPTION</button>
-          </form>
+        <form onSubmit={handleRegister} className={styles.form}>
+          <h1>PizzIA Inscription</h1>
+          <input type="text" placeholder="Adresse email" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="text" placeholder="Nom" className={styles.input} value={lastName} onChange={(e) => setLastname(e.target.value)} />
+          <input type="text" placeholder="Prénom" className={styles.input} value={firstName} onChange={(e) => setFirstname(e.target.value)} />
+          <input type="password" placeholder="Mot de dpasse" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button className={styles.button_inscription}>INSCRIPTION</button>
+        </form>
       </div>
     </div>
   );

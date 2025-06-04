@@ -10,6 +10,18 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState(''); // 'success' ou 'error'
+
+  const showMessage = (msg, type = 'succes') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -23,20 +35,28 @@ export default function Login() {
       const data = await res.status;
 
       if (res.status != 200) {
-        alert(data.details || "Erreur lors de la connexion");
+        showMessage(data.details || "Erreur lors de la connexion");
         return;
       }
 
       localStorage.setItem('isLoggedIn', 'true');
-      alert('Connexion réussi');
-      router.push('/home')
+      showMessage('Connexion réussi');
+      setTimeout(() => {
+        router.push('/home')
+      },1000)
     } catch (error) {
       console.log("Erreur API", error);
-      alert('Erreur lors de la connexion')
+      showMessage('Erreur lors de la connexion')
     }
   }
   return (
+
     <div className={styles.contain}>
+      {message && (
+        <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
+          {message}
+        </div>
+      )}
       <div className={styles.contain_form}>
         <div className={styles.contain_left}>
           <div className={styles.bloc_decoration}>
@@ -49,11 +69,11 @@ export default function Login() {
             <h1>Connexion</h1>
 
             <div className={styles.contain_input}>
-              <input type="text" placeholder="Adresse email" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type="text" placeholder="Adresse email" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)}  />
             </div>
 
             <div className={styles.contain_input}>
-              <input type="password" placeholder="Mot de passe" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" placeholder="Mot de passe" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)}  />
             </div>
 
             <button className={styles.btn_connexion}>Connexion</button>

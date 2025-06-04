@@ -4,60 +4,79 @@ import { useEffect, useState } from 'react';
 
 export default function ProductsManage() {
 
-    const [activeForm, setActiveForm]   = useState('add');
-    const [name, setName]               = useState('');
-    const [price, setPrice]             = useState('');
-    const [id, setId]                   = useState('');
+    const [activeForm, setActiveForm] = useState('add');
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [id, setId] = useState('');
+
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('');
+
+
+    const showMessage = (msg, type = 'succes') => {
+        setMessage(msg);
+        setMessageType(type);
+        setTimeout(() => {
+            setMessage('');
+            setMessageType('');
+        }, 3000);
+    }
 
     const handleAddProduct = async (e) => {
-         e.preventDefault();
-        try{
-           const response = await fetch('http://localhost:3001/products/',{
-            method: 'POST',
-            headers : {
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify({name, price : parseFloat(price)}),
-            credentials: 'include'
-           });
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:3001/products/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, price: parseFloat(price) }),
+                credentials: 'include'
+            });
 
-           if(!response.ok) {
-               throw new Error('Erreur lors de l\'ajout du produit');
-           }
+            if (!response.ok) {
+                throw new Error('Erreur lors de l\'ajout du produit');
+            }
 
-           const data = await response.json();
-           console.log("Porduit ajouter", data);
-           alert('Produit ajouté avec succès');
+            const data = await response.json();
+            console.log("Porduit ajouter", data);
+            showMessage('Produit ajouté avec succès');
 
-           setName('');
-           setPrice('');
+            setName('');
+            setPrice('');
 
-        }catch (error) {
+        } catch (error) {
             console.error('Erreur lors de l\'ajout du produit:', error);
         }
     }
 
     const handleUpdateProcut = async (e) => {
         e.preventDefault();
-        try{
+        try {
             const response = await fetch(`http://localhost:3001/products/${id}`, {
-                method  : 'PUT',
-                headers : {
-                    'Content-Type' : 'application/json'
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                body : JSON.stringify({name, price : parseFloat(price)}),
+                body: JSON.stringify({ name, price: parseFloat(price) }),
                 credentials: 'include'
             });
 
             const data = await response.json();
             console.log('Produit modifier', data)
-        }catch(error){
+            showMessage('Produit modifier avec succès');
+        } catch (error) {
             console.log("Erreur lors de la modification du produit", error);
         }
     }
 
     return (
         <div>
+            {message && (
+                <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
+                    {message}
+                </div>
+            )}
             <div className={styles.container_admin}>
                 <div className={`${styles.container} ${activeForm === 'edit' ? styles.containerEdit : styles.containerAdd}`}>
                     <div className={styles.switchButtons}>
@@ -68,7 +87,7 @@ export default function ProductsManage() {
                     {activeForm === 'add' && (
                         <form className={styles.formAdd} onSubmit={handleAddProduct}>
                             <h2>Ajouter un produit</h2>
-                            <input type="text" placeholder="Nom du produit" value={name} onChange={(e) => setName(e.target.value)}/>
+                            <input type="text" placeholder="Nom du produit" value={name} onChange={(e) => setName(e.target.value)} />
                             <input type="number" placeholder="Prix" value={price} onChange={(e) => setPrice(e.target.value)} />
                             <button type="submit" className={styles.button_submit}>Ajouter</button>
                         </form>
@@ -77,9 +96,9 @@ export default function ProductsManage() {
                     {activeForm === 'edit' && (
                         <form className={styles.formUpdate} onSubmit={handleUpdateProcut}>
                             <h2>Modifier un produit</h2>
-                            <input type="text" placeholder="ID du produit" value={id} onChange={(e) => setId(e.target.value)}/>
+                            <input type="text" placeholder="ID du produit" value={id} onChange={(e) => setId(e.target.value)} />
                             <input type="text" placeholder="Nouveau nom" value={name} onChange={(e) => setName(e.target.value)} />
-                            <input type="number" placeholder="Nouveau prix" value={price} onChange={(e) => setPrice(e.target.value)}  />
+                            <input type="number" placeholder="Nouveau prix" value={price} onChange={(e) => setPrice(e.target.value)} />
                             <button type="submit" className={styles.button_submit}>Modifier</button>
                         </form>
                     )}
