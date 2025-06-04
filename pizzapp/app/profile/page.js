@@ -40,7 +40,6 @@ export default function ProfilePage() {
 
       if (res.status === 200) {
         const ordersData = await res.json();
-        console.log(orders);
 
         setOrders(ordersData);
       }
