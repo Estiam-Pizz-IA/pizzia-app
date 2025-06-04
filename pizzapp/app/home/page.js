@@ -6,9 +6,9 @@ import Navbar from "../components/navbar";
 export default function Home() {
   return (
     <div className={styles.container}>
-     <Navbar />
+      <Navbar />
 
-       <div className={styles.container_two}>
+      <div className={styles.container_two}>
         <div className={styles.blocs}>
           <div className={styles.bloc_left}>
             <div className={styles.commands}></div>
