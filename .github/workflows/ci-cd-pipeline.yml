@@ -35,7 +35,6 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    environment: dev
     steps:
       - name: Set EC2 host
         id: set-host
