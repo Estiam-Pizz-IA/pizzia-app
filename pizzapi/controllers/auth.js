@@ -83,44 +83,16 @@ const authLogin = (req, res) => {
 }
 
 const authProfile = (req, res) => {
-  verifyAuth(req.session)
-    .then((decodedClaims) => {
-      usersDatabase.doc(decodedClaims.uid).get()
-        .then((document) => {
-          return res.json({ ...document.data() });
-        })
-    })
-    .catch((error) => {
-      return res.status(403).json(error);
-    });
+  usersDatabase.doc(req.authUserId).get()
+  .then((document) => {
+    return res.json({ ...document.data() });
+  });
 }
 
 const authLogout = (req, res) => {
-  verifyAuth(req.session)
-    .then((decodedClaims) => {
-      auth.revokeRefreshTokens(decodedClaims.sub);
-      req.session = null;
-      return res.sendStatus(200)
-    })
-    .catch((error) => {
-      return res.status(403).json(error)
-    });
+  auth.revokeRefreshTokens(req.authUserId);
+  req.session = null
+  return res.sendStatus(200);
 }
 
-const verifyAuth = (session) => {
-  const sessionCookie = session.firebaseToken || '';
-  return new Promise((resolve, reject) => {
-    auth.verifySessionCookie(sessionCookie, true)
-      .then((decodedClaims) => {
-        resolve(decodedClaims)
-      })
-      .catch(() => {
-        reject({
-          error: 'auth/not-authenticated',
-          message: 'L\'utilisateur n\'es pas connecté'
-        });
-      });
-  })
-}
-
-module.exports = { authRegister, authLogin, authProfile, authLogout, verifyAuth }
+module.exports = { authRegister, authLogin, authProfile, authLogout }

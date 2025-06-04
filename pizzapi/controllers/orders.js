@@ -9,7 +9,7 @@ const getOrders = (req, res) => {
   orders.get()
     .then(snapshot => {
       if (snapshot.empty) {
-        return res.status(404).json({ message: 'No orders found' });
+        return res.status(200).json([]);
       }
 
       const ordersList = [];
@@ -53,13 +53,41 @@ const getOrderById = (req, res) => {
     });
 }
 
+const getOrdersByUserID = (req, res) => {
+  const userID = req.authUserId;
+
+  orders.where('userID.uid', '==', userID).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        return res.status(200).json([]);
+      }
+
+      const userOrders = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      return res.status(200).json(userOrders);
+    })
+    .catch(error => {
+      return res.status(500).json({
+        message: {
+          error: 'Erreur lors de la récupération des commandes',
+          details: error.message
+        }
+      });
+    });
+};
+
+
 const createOrder = async (req, res) => {
   try {
     const newOrder = req.body;
 
     newOrder.dateOrder = new Date().toISOString();
+    const userID = req.authUserId;
 
-    const userData = await getUser(req.body.userID);
+    const userData = await getUser(userID);
     const pizzaData = await getProducts(req.body.pizzaIDs);
 
     newOrder.userID = userData;
@@ -79,27 +107,43 @@ const createOrder = async (req, res) => {
   }
 };
 
-const updateOrder = (req, res) => {
+const updateOrder = async (req, res) => {
   const orderID = req.params.id;
-  const updatedData = req.body;
+  const { pizzaID, name, price } = req.body;
 
-  if (!updatedData.pizzaID) {
-    return res.status(400).json({ message: 'Please, select a pizza' });
-  }
+  try {
+    const orderDoc = await orders.doc(orderID).get();
 
-  orders.doc(orderID).update(updatedData)
-    .then(() => {
-      return res.status(200).json({ id: orderID, ...updatedData });
-    })
-    .catch(error => {
-      return res.status(500).json({
-        message: {
-          error: 'Error updating order',
-          details: error.message
-        }
-      });
+    if (!orderDoc.exists) {
+      return res.status(404).json({ message: 'Commande non trouvée' });
+    }
+
+    const orderData = orderDoc.data();
+
+    const updatedPizzaList = orderData.pizzaIDs.map(pizza => {
+      if (pizza.id === pizzaID) {
+        return {
+          ...pizza,
+          name,
+          price
+        };
+      }
+      return pizza;
     });
-}
+
+    await orders.doc(orderID).update({ pizzaIDs: updatedPizzaList });
+
+    return res.status(200).json({ message: 'Pizza mise à jour' });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: {
+        error: 'Erreur serveur',
+        details: error.message
+      }
+    });
+  }
+};
 
 const deleteOrder = (req, res) => {
   const orderID = req.params.id;
@@ -117,4 +161,4 @@ const deleteOrder = (req, res) => {
     });
 }
 
-module.exports = { getOrders, getOrderById, createOrder, updateOrder, deleteOrder };
+module.exports = { getOrders, getOrderById, getOrdersByUserID, createOrder, updateOrder, deleteOrder };

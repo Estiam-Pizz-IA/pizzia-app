@@ -6,7 +6,7 @@ const getProducts = (req, res) => {
   products.get()
     .then(snapshot => {
       if (snapshot.empty) {
-        return res.status(404).json({ message: 'No products found' });
+        return res.status(200).json([]);
       }
 
       const products = [];

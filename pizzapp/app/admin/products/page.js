@@ -17,7 +17,8 @@ export default function ProductsManage() {
             headers : {
                 'Content-Type': 'application/json'
             },
-            body : JSON.stringify({name, price : parseFloat(price)})
+            body : JSON.stringify({name, price : parseFloat(price)}),
+            credentials: 'include'
            });
 
            if(!response.ok) {
@@ -44,7 +45,8 @@ export default function ProductsManage() {
                 headers : {
                     'Content-Type' : 'application/json'
                 },
-                body : JSON.stringify({name, price : parseFloat(price)})
+                body : JSON.stringify({name, price : parseFloat(price)}),
+                credentials: 'include'
             });
 
             const data = await response.json();
